@@ -1,0 +1,2588 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wave Tronics - Invoice & Quotation Pro</title>
+  <meta name="description" content="Wave Tronics Invoice & Quotation Generator">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wave Tronics">
+  <link rel="manifest" id="manifestLink">
+  <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --container-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --primary-color: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --accent: #0ea5e9;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --input-bg: #f9fafb;
+            --tab-inactive: #94a3b8;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --container-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --border-color: #334155;
+            --primary-light: #0c4a6e;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            --input-bg: #0f172a;
+            --tab-inactive: #475569;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: linear-gradient(135deg, #0284c7, #0369a1, #075985);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(2, 132, 199, 0.3);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-bar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .top-bar .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Tab System */
+        .tab-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: var(--container-bg);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--tab-inactive);
+            background: transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .tab-btn .tab-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .tab-btn.active .tab-badge {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tab-btn:not(.active) .tab-badge {
+            background: var(--border-color);
+        }
+
+        .app-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            flex: 0 0 380px;
+            background-color: var(--container-bg);
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 15px;
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-header.quotation-header {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        }
+
+        .form-body {
+            padding: 18px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .form-body::-webkit-scrollbar { width: 5px; }
+        .form-body::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 10px; }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            margin: 18px 0 10px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-title:first-child { margin-top: 0; }
+
+        .form-group { margin-bottom: 10px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+            transition: all 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+        .form-group textarea { resize: vertical; min-height: 50px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+        .discount-info {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px dashed #16a34a;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: #14532d;
+            display: none;
+        }
+        .discount-info.show { display: block; animation: fadeIn 0.3s; }
+        .discount-info strong { color: #15803d; font-size: 13px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Customer Suggestions */
+        .customer-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--container-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .customer-suggestions.show { display: block; }
+
+        .suggestion-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            transition: background 0.15s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--primary-light);
+        }
+
+        .suggestion-item .s-name { font-weight: 700; font-size: 13px; }
+        .suggestion-item .s-details { color: #64748b; font-size: 11px; }
+
+        .customer-name-wrapper {
+            position: relative;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            transition: all 0.25s;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary { background: linear-gradient(135deg, #0284c7, #0369a1); }
+        .btn-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+        .btn-whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); }
+        .btn-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .btn-dark { background: linear-gradient(135deg, #475569, #334155); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+        .btn-block { width: 100%; justify-content: center; padding: 12px; font-size: 14px; margin-top: 6px; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .status-paid { background: #dcfce7; color: #15803d; }
+        .status-partial { background: #fef3c7; color: #92400e; }
+        .status-unpaid { background: #fee2e2; color: #991b1b; }
+        .status-quotation { background: #ede9fe; color: #6d28d9; }
+        .status-expired { background: #f1f5f9; color: #64748b; }
+        .status-overdue { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        .invoice-preview-wrapper {
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+        }
+
+        .invoice-page {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            color: #1a1a1a;
+            padding: 10mm 14mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 25px rgba(0,0,0,0.12);
+            margin: 0 auto;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            font-size: 80px;
+            font-weight: 900;
+            color: rgba(2, 132, 199, 0.04);
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 0;
+        }
+
+        .invoice-content { 
+            position: relative; 
+            z-index: 1; 
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 3px solid #0284c7;
+            position: relative;
+        }
+
+        .invoice-header.quotation-mode {
+            border-bottom-color: #7c3aed;
+        }
+
+        .invoice-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: #f59e0b;
+        }
+
+        .logo-sec { display: flex; align-items: center; gap: 10px; }
+        .logo-sec img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+        }
+
+        .company-details {
+            text-align: right;
+            font-size: 10.5px;
+            line-height: 1.6;
+            color: #475569;
+        }
+        .inv-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #0284c7;
+            letter-spacing: 3px;
+            margin-bottom: 4px;
+        }
+
+        .inv-title.quotation-title {
+            color: #7c3aed;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .info-box {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .info-box-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 4px 10px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box-header.quotation-box {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        }
+
+        .info-box-body {
+            padding: 8px 10px;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        .info-row { display: flex; justify-content: space-between; }
+        .info-label { font-weight: 600; color: #475569; }
+
+        .inv-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        .inv-table th {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 10.5px;
+            letter-spacing: 0.3px;
+            font-weight: 600;
+        }
+
+        .inv-table.quotation-table th {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        }
+
+        .inv-table th:first-child { border-radius: 5px 0 0 0; }
+        .inv-table th:last-child { border-radius: 0 5px 0 0; }
+        .inv-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .inv-table tr:nth-child(even) td { background: #f8fafc; }
+
+        .text-right { text-align: right !important; }
+        .text-center { text-align: center !important; }
+        .bold { font-weight: 700; }
+
+        .qty-discount-row td {
+            background: #f0fdf4 !important;
+            color: #14532d;
+            font-size: 10px !important;
+            font-style: italic;
+        }
+
+        .summary-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .summary-table {
+            width: 55%;
+            border-collapse: collapse;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .summary-table td {
+            padding: 5px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+        }
+        .summary-table tr:nth-child(even) td { background: #f8fafc; }
+        .qty-disc-line td {
+            background: #f0fdf4 !important;
+            color: #15803d;
+            font-size: 10.5px !important;
+        }
+        .net-total td {
+            background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+            color: white !important;
+            font-weight: 800;
+            font-size: 12.5px !important;
+        }
+
+        .net-total.quotation-total td {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
+        }
+
+        .balance-due td {
+            background: #fef2f2 !important;
+            font-weight: 800;
+            font-size: 13px !important;
+            color: #991b1b !important;
+        }
+
+        .amount-words {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 5px;
+            padding: 6px 10px;
+            font-size: 10.5px;
+            margin-bottom: 10px;
+            color: #0369a1;
+        }
+        .amount-words strong { color: #0c4a6e; }
+
+        .validity-notice {
+            background: #faf5ff;
+            border: 1px solid #d8b4fe;
+            border-left: 3px solid #7c3aed;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 10.5px;
+            margin-bottom: 10px;
+            color: #6d28d9;
+        }
+
+        .footer-blocks {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 10px;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 2px solid #e2e8f0;
+        }
+        .bank-details {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 8px 10px;
+            line-height: 1.6;
+        }
+        .bank-details .bank-title {
+            font-weight: 700;
+            color: #0284c7;
+            margin-bottom: 3px;
+            font-size: 10.5px;
+        }
+        .signatures {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .sig-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .sig-box {
+            text-align: center;
+            flex: 1;
+        }
+        .sig-line {
+            border-top: 1.5px solid #1a1a1a;
+            padding-top: 4px;
+            font-size: 9.5px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .terms {
+            font-size: 7.5pt;
+            color: #64748b;
+            margin-top: 10px;
+            background: #f8fafc;
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            border-left: 3px solid #0284c7;
+        }
+
+        .terms.quotation-terms {
+            border-left-color: #7c3aed;
+        }
+
+        .terms h4 {
+            margin: 0 0 4px 0;
+            color: #0284c7;
+            font-size: 8.5pt;
+        }
+
+        .terms.quotation-terms h4 {
+            color: #7c3aed;
+        }
+
+        .terms ul { margin: 0; padding-left: 14px; }
+        .terms li { margin-bottom: 1px; line-height: 1.4; }
+
+        .footer-message {
+            text-align: center;
+            font-size: 8.5pt;
+            margin-top: 8px;
+            color: #0284c7;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* Due Date Warning */
+        .due-warning {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            border-radius: 5px;
+            padding: 6px 10px;
+            font-size: 10.5px;
+            margin-bottom: 10px;
+            color: #991b1b;
+            display: none;
+        }
+
+        .due-warning.show { display: block; }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+            min-width: 250px;
+        }
+        .toast-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+        .toast-error { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .toast-info { background: linear-gradient(135deg, #0284c7, #0369a1); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(100%); }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--container-bg);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(85vh - 60px);
+        }
+
+        /* Modal Tabs */
+        .modal-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 15px;
+            background: var(--input-bg);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .modal-tab-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--tab-inactive);
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .modal-tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .history-item:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+        }
+        .history-info { flex: 1; }
+        .history-info .h-name { font-weight: 700; font-size: 14px; }
+        .history-info .h-details { font-size: 11px; color: #64748b; margin-top: 2px; }
+        .history-actions { display: flex; gap: 4px; }
+        .history-actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .stat-card {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dash-stat {
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .dash-stat .ds-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .dash-stat .ds-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Search */
+        .search-box {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Install Banner */
+        .install-banner {
+            display: none;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(2,132,199,0.3);
+        }
+
+        .install-banner.show { display: flex; }
+
+        .install-banner-text {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .install-banner .btn { background: rgba(255,255,255,0.2); }
+
+        /* Overdue indicator */
+        .overdue-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; }
+            .form-section { flex: none; width: 100%; position: static; }
+            .invoice-page { width: 100%; height: auto; min-height: 297mm; }
+            .info-section { flex-direction: column; }
+            .summary-table { width: 100%; }
+            .footer-blocks { flex-direction: column; }
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .quick-stats { grid-template-columns: repeat(2, 1fr); }
+            .tab-btn { font-size: 12px; padding: 10px 12px; }
+        }
+
+        @media print {
+            @page { 
+                size: A4 portrait; 
+                margin: 0; 
+            }
+            html, body { 
+                background: white !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                width: 210mm;
+                height: 297mm;
+            }
+            .no-print { display: none !important; }
+            .app-container { 
+                display: block !important;
+                max-width: 100% !important;
+                gap: 0 !important;
+            }
+            .invoice-preview-wrapper { 
+                width: 100% !important; 
+                overflow: visible !important;
+                min-width: auto !important;
+            }
+            .invoice-page {
+                width: 210mm !important;
+                height: 297mm !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 10mm 14mm !important;
+                border-radius: 0 !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+        }
+    </style>
+ </head>
+ <body>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- History/Records Modal -->
+  <div class="modal-overlay" id="historyModal">
+   <div class="modal">
+    <div class="modal-header">
+     <span>📋 Records & History</span>
+     <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+     <!-- Dashboard Stats -->
+     <div class="dashboard-stats" id="dashboardStats"></div>
+     
+     <!-- Modal Tabs -->
+     <div class="modal-tabs">
+      <button class="modal-tab-btn active" onclick="filterHistory('all', this)">📋 All</button>
+      <button class="modal-tab-btn" onclick="filterHistory('invoice', this)">📄 Invoices</button>
+      <button class="modal-tab-btn" onclick="filterHistory('quotation', this)">📑 Quotations</button>
+      <button class="modal-tab-btn" onclick="filterHistory('unpaid', this)">🔴 Unpaid</button>
+      <button class="modal-tab-btn" onclick="filterHistory('overdue', this)">⚠️ Overdue</button>
+      <button class="modal-tab-btn" onclick="filterHistory('customers', this)">👥 Customers</button>
+     </div>
+
+     <!-- Search -->
+     <input type="text" class="search-box" id="historySearch" placeholder="🔍 Search by name, number, mobile..." oninput="searchHistory()">
+     
+     <div id="historyList">
+      <p style="text-align:center; color:#94a3b8;">No records yet</p>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- Install Banner -->
+  <div class="install-banner no-print" id="installBanner">
+   <div class="install-banner-text">📱 Install Wave Tronics app on your phone!</div>
+   <button class="btn" onclick="installApp()">📲 Install</button>
+   <button class="btn" onclick="dismissInstall()" style="background:rgba(255,255,255,0.1);">✕</button>
+  </div>
+
+  <!-- Top Navigation -->
+  <div class="top-bar no-print">
+   <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <span>WAVE TRONICS</span>
+   </div>
+   <div class="top-bar-actions">
+    <button class="btn btn-dark" onclick="toggleTheme()">🌓 Theme</button>
+    <button class="btn btn-warning" onclick="showHistory()">📋 Records</button>
+    <button class="btn btn-success" onclick="saveDocument()">💾 Save</button>
+    <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📱 WhatsApp</button>
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Print/PDF</button>
+    <button class="btn btn-danger" onclick="resetForm()">🔄 Reset</button>
+   </div>
+  </div>
+
+  <!-- Document Type Tabs -->
+  <div class="tab-container no-print">
+   <button class="tab-btn active" id="tabInvoice" onclick="switchTab('invoice')">
+    📄 Invoice <span class="tab-badge" id="invoiceCount">0</span>
+   </button>
+   <button class="tab-btn" id="tabQuotation" onclick="switchTab('quotation')">
+    📑 Quotation <span class="tab-badge" id="quotationCount">0</span>
+   </button>
+  </div>
+
+  <div class="app-container">
+   <!-- FORM SECTION -->
+   <div class="form-section no-print">
+    <div class="form-header" id="formHeader">📝 Invoice Generator</div>
+    <div class="form-body" id="formBody" oninput="updateDocument()">
+     <!-- Quick Stats -->
+     <div class="quick-stats">
+      <div class="stat-card">
+       <div class="stat-value" id="statTotal">0</div>
+       <div class="stat-label">Net Total</div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="statBalance">0</div>
+       <div class="stat-label">Balance</div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="statItems">0</div>
+       <div class="stat-label">Qty</div>
+      </div>
+      <div class="stat-card">
+       <div class="stat-value" id="statDue">7d</div>
+       <div class="stat-label">Due In</div>
+      </div>
+     </div>
+
+     <div class="section-title">👤 Customer Information</div>
+     <div class="form-group customer-name-wrapper">
+      <label>Customer Name *</label>
+      <input type="text" id="custName" placeholder="Enter or search customer name" required autocomplete="off" oninput="showCustomerSuggestions()">
+      <div class="customer-suggestions" id="custSuggestions"></div>
+     </div>
+     <div class="grid-2">
+      <div class="form-group">
+       <label>Mobile Number *</label>
+       <input type="tel" id="custMobile" placeholder="07XXXXXXXX" maxlength="12">
+      </div>
+      <div class="form-group">
+       <label>Email (Optional)</label>
+       <input type="email" id="custEmail" placeholder="email@example.com">
+      </div>
+     </div>
+     <div class="form-group">
+      <label>Address</label>
+      <textarea id="custAddress" placeholder="Customer address" rows="2"></textarea>
+     </div>
+
+     <div class="section-title">📐 PCB Specifications</div>
+     <div class="form-group">
+      <label>Board Material</label>
+      <select id="material">
+       <option value="1.0">1.0mm Copper Clad Board</option>
+       <option value="1.2">1.2mm Copper Clad Board</option>
+       <option value="1.5">1.5mm Copper Clad Board</option>
+       <option value="1.6FR4">1.6mm FR-4 Board</option>
+      </select>
+     </div>
+     <div class="grid-3">
+      <div class="form-group">
+       <label>Length (mm)</label>
+       <input type="number" id="length" value="100" min="1">
+      </div>
+      <div class="form-group">
+       <label>Width (mm)</label>
+       <input type="number" id="width" value="100" min="1">
+      </div>
+      <div class="form-group">
+       <label>Quantity</label>
+       <input type="number" id="qty" value="10" min="1">
+      </div>
+     </div>
+
+     <div class="discount-info" id="discountInfo">
+      🎉 <strong>Bulk Discount Applied!</strong>
+      <div id="discountInfoText" style="margin-top:4px;"></div>
+     </div>
+
+     <div class="grid-2">
+      <div class="form-group">
+       <label>PCB Layer</label>
+       <select id="pcbLayer">
+        <option value="single">Single Side</option>
+        <option value="double">Double Side</option>
+       </select>
+      </div>
+      <div class="form-group">
+       <label>Copper Weight</label>
+       <select id="copperWeight">
+        <option value="1oz">1 oz (Standard)</option>
+        <option value="2oz">2 oz (Heavy)</option>
+       </select>
+      </div>
+     </div>
+
+     <div class="section-title">💰 Extra Charges (Rs.)</div>
+     <div class="grid-2">
+      <div class="form-group">
+       <label>Design Cost</label>
+       <input type="number" id="exDesign" value="0" min="0">
+      </div>
+      <div class="form-group">
+       <label>Solder Mask Cost</label>
+       <input type="number" id="exSolder" value="0" min="0">
+      </div>
+      <div class="form-group">
+       <label>Silk Screen Cost</label>
+       <input type="number" id="exSilk" value="0" min="0">
+      </div>
+      <div class="form-group">
+       <label>Drilling Cost</label>
+       <input type="number" id="exDrilling" value="0" min="0">
+      </div>
+      <div class="form-group">
+       <label>Delivery Cost</label>
+       <input type="number" id="exDelivery" value="0" min="0">
+      </div>
+      <div class="form-group">
+       <label>Other Charges</label>
+       <input type="number" id="exOther" value="0" min="0">
+      </div>
+     </div>
+
+     <!-- Payment Section - shown for Invoice only -->
+     <div id="paymentSection">
+      <div class="section-title">💳 Payment Details</div>
+      <div class="grid-2">
+       <div class="form-group">
+        <label>Manual Discount (Rs.)</label>
+        <input type="number" id="discount" value="0" min="0">
+       </div>
+       <div class="form-group">
+        <label>Advance Payment (Rs.)</label>
+        <input type="number" id="advance" value="0" min="0">
+       </div>
+      </div>
+      <div class="form-group">
+       <label>Payment Method</label>
+       <select id="paymentMethod">
+        <option value="cash">Cash</option>
+        <option value="bank">Bank Transfer</option>
+        <option value="online">Online Payment</option>
+        <option value="cheque">Cheque</option>
+       </select>
+      </div>
+     </div>
+
+     <!-- Quotation Validity - shown for Quotation only -->
+     <div id="quotationSection" style="display:none;">
+      <div class="section-title" style="color:#7c3aed; border-bottom-color:#ede9fe;">📑 Quotation Settings</div>
+      <div class="grid-2">
+       <div class="form-group">
+        <label>Validity (Days)</label>
+        <input type="number" id="quotationValidity" value="7" min="1" max="90">
+       </div>
+       <div class="form-group">
+        <label>Manual Discount (Rs.)</label>
+        <input type="number" id="quotationDiscount" value="0" min="0">
+       </div>
+      </div>
+     </div>
+
+     <div class="section-title">📝 Notes</div>
+     <div class="form-group">
+      <textarea id="invoiceNotes" placeholder="Additional notes..." rows="3"></textarea>
+     </div>
+
+     <button class="btn btn-primary btn-block" id="btnPrint" onclick="window.print()">🖨️ Generate PDF / Print</button>
+     <button class="btn btn-success btn-block" id="btnSave" onclick="saveDocument()">💾 Save Invoice</button>
+     <button class="btn btn-purple btn-block" id="btnConvert" style="display:none;" onclick="convertQuotationToInvoice()">📄 Convert to Invoice</button>
+    </div>
+   </div>
+
+   <!-- DOCUMENT PREVIEW -->
+   <div class="invoice-preview-wrapper">
+    <div class="invoice-page" id="invoiceArea">
+     <div class="watermark">WAVE TRONICS</div>
+     <div class="invoice-content">
+      <!-- Header -->
+      <div class="invoice-header" id="docHeader">
+       <div class="logo-sec">
+        <img src="143481.png" alt="Wave Tronics" id="companyLogo">
+       </div>
+       <div class="company-details">
+        <div class="inv-title" id="docTitle">INVOICE</div>
+        <strong>Wave Tronics</strong><br>
+        <strong>Proprietor:</strong> M.M. Chamod<br>
+        <strong>Mobile / WhatsApp:</strong> 075 860 7096<br>
+        <strong>Email:</strong> wavetronicslk@gmail.com
+       </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="info-section">
+       <div class="info-box">
+        <div class="info-box-header" id="billToHeader">📋 BILL TO</div>
+        <div class="info-box-body">
+         <div id="invCustName" class="bold" style="font-size:12px; color:#0c4a6e;">Customer Name</div>
+         <div id="invCustMobile">📞 Mobile Number</div>
+         <div id="invCustEmail" style="display:none;">📧 Email</div>
+         <div id="invCustAddress">📍 Address</div>
+        </div>
+       </div>
+       <div class="info-box">
+        <div class="info-box-header" id="docDetailsHeader">📄 INVOICE DETAILS</div>
+        <div class="info-box-body">
+         <div class="info-row">
+          <span class="info-label" id="docNumberLabel">Invoice No:</span>
+          <span id="invNumber" class="bold">INV-00000</span>
+         </div>
+         <div class="info-row">
+          <span class="info-label">Date:</span>
+          <span id="invDate">-</span>
+         </div>
+         <div class="info-row">
+          <span class="info-label" id="dueDateLabel">Due Date:</span>
+          <span id="invDueDate">-</span>
+         </div>
+         <div class="info-row">
+          <span class="info-label">Status:</span>
+          <span id="invStatus"><span class="status-badge status-unpaid">● Unpaid</span></span>
+         </div>
+        </div>
+       </div>
+      </div>
+
+      <!-- PCB Details Table -->
+      <table class="inv-table" id="mainTable">
+       <thead>
+        <tr>
+         <th style="width:5%;">#</th>
+         <th>PCB Description</th>
+         <th class="text-center">Dimensions</th>
+         <th class="text-center">Area (cm²)</th>
+         <th class="text-center">Qty</th>
+         <th class="text-center">Rate/cm²</th>
+         <th class="text-right">Amount (Rs)</th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="text-center">1</td>
+         <td id="invMaterial">
+          <div class="bold">1.0mm Copper Clad Board</div>
+          <div style="font-size:9.5px; color:#64748b;" id="invSpecs">Single Side | 1 oz Copper</div>
+         </td>
+         <td class="text-center"><span id="invL">0</span> × <span id="invW">0</span> mm</td>
+         <td class="text-center" id="invArea">0.00</td>
+         <td class="text-center" id="invQty">0</td>
+         <td class="text-center" id="invUnitPrice">0.00</td>
+         <td class="text-right bold" id="invPcbTotal">0.00</td>
+        </tr>
+        <tr class="qty-discount-row" id="qtyDiscountRow" style="display:none;">
+         <td></td>
+         <td colspan="5">🎉 <strong id="qtyDiscountLabel">Bulk Quantity Discount</strong> <span id="qtyDiscountDetails"></span></td>
+         <td class="text-right bold" style="color:#15803d;">- <span id="qtyDiscountAmount">0.00</span></td>
+        </tr>
+       </tbody>
+      </table>
+
+      <!-- Extra Charges Table -->
+      <table class="inv-table" id="extraChargesTable" style="display:none;">
+       <thead>
+        <tr>
+         <th style="width:5%;">#</th>
+         <th>Additional Charges Description</th>
+         <th style="width:150px;" class="text-right">Amount (Rs)</th>
+        </tr>
+       </thead>
+       <tbody id="extraChargesBody"></tbody>
+      </table>
+
+      <!-- Summary -->
+      <div class="summary-section">
+       <table class="summary-table">
+        <tbody>
+         <tr>
+          <td>PCB Sub Total</td>
+          <td class="text-right" id="invPcbSubTotal">0.00</td>
+         </tr>
+         <tr class="qty-disc-line" id="qtyDiscSummary" style="display:none;">
+          <td>🎉 Bulk Discount (<span id="qtyDiscPct">0</span>%)</td>
+          <td class="text-right">- <span id="qtyDiscSumAmount">0.00</span></td>
+         </tr>
+         <tr>
+          <td>Extra Charges</td>
+          <td class="text-right" id="invExtraTotal">0.00</td>
+         </tr>
+         <tr>
+          <td class="bold">Gross Total</td>
+          <td class="text-right bold" id="invSubTotal">0.00</td>
+         </tr>
+         <tr>
+          <td>Manual Discount</td>
+          <td class="text-right" style="color:#dc2626;">- <span id="invDiscount">0.00</span></td>
+         </tr>
+         <tr class="net-total" id="netTotalRow">
+          <td id="netTotalLabel">Net Total</td>
+          <td class="text-right" id="invNetTotal">0.00</td>
+         </tr>
+         <tr id="advanceRow">
+          <td>Advance (<span id="invPayMethod">Cash</span>)</td>
+          <td class="text-right" style="color:#16a34a;">- <span id="invAdvance">0.00</span></td>
+         </tr>
+         <tr class="balance-due" id="balanceRow">
+          <td>💰 Balance Due</td>
+          <td class="text-right" id="invBalance">0.00</td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+
+      <!-- Amount in Words -->
+      <div class="amount-words">
+       <strong>Amount in Words:</strong> <span id="invAmountWords">Zero Rupees Only</span>
+      </div>
+
+      <!-- Quotation Validity Notice -->
+      <div class="validity-notice" id="validityNotice" style="display:none;">
+       <strong>📑 Quotation Validity:</strong> This quotation is valid for <span id="validityDays">7</span> days from the date of issue
+       (until <span id="validityEndDate">-</span>). Prices may change after the validity period.
+      </div>
+
+      <!-- Due Date Warning -->
+      <div class="due-warning" id="dueWarning">
+       ⚠️ <strong>Payment Reminder:</strong> Payment is due within <strong>7 days</strong> from the invoice date.
+       Late payments may incur additional charges.
+      </div>
+
+      <!-- Notes -->
+      <div id="invNotesSection" style="display:none; margin-bottom:10px;">
+       <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:5px; padding:6px 10px; font-size:10.5px; border-left:3px solid #f59e0b;">
+        <strong style="color:#92400e;">📌 Notes:</strong> <span id="invNotes"></span>
+       </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer-blocks">
+       <div class="bank-details" id="bankDetailsBlock">
+        <div class="bank-title">🏦 Bank Details for Payments:</div>
+        <strong>Bank:</strong> BOC BANK<br>
+        <strong>Branch:</strong> PASGODA BRANCH<br>
+        <strong>A/C Name:</strong> M.M.CHAMOD<br>
+        <strong>A/C Number:</strong> 93310812
+       </div>
+       <div class="signatures">
+        <div class="sig-row">
+         <div class="sig-box">
+          <br><br>
+          <div class="sig-line">Customer Signature</div>
+         </div>
+         <div class="sig-box">
+          <br><br>
+          <div class="sig-line">Authorized Signature</div>
+         </div>
+        </div>
+       </div>
+      </div>
+
+      <div class="terms" id="termsBlock">
+       <h4>📜 Terms & Conditions</h4>
+       <ul id="termsList">
+        <li>Manufacturing starts after design confirmation & advance payment.</li>
+        <li>Customer must verify PCB design and dimensions before production.</li>
+        <li>No cancellations or design changes once production begins.</li>
+        <li>Payment balance must be completed within 7 days from invoice date.</li>
+        <li>Warranty covers manufacturing defects only (30 days from delivery).</li>
+       </ul>
+      </div>
+
+      <div class="footer-message">
+       ✨ Thank you for choosing Wave Tronics! ✨<br>
+       <span style="font-size:7pt; color:#94a3b8;">© 2024 Wave Tronics. All Rights Reserved.</span>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <script>
+    // ============ STATE MANAGEMENT ============
+    let currentTab = 'invoice'; // 'invoice' or 'quotation'
+    let currentHistoryFilter = 'all';
+    let deferredPrompt = null;
+
+    // Storage Keys
+    const STORAGE_KEYS = {
+        invoices: 'wt_invoices',
+        quotations: 'wt_quotations',
+        customers: 'wt_customers',
+        settings: 'wt_settings',
+        counters: 'wt_counters'
+    };
+
+    // ============ INITIALIZATION ============
+    const today = new Date();
+    const dueDate = new Date(today);
+    dueDate.setDate(dueDate.getDate() + 7); // 7 days payment period
+
+    document.getElementById('invDate').innerText = formatDate(today);
+    document.getElementById('invDueDate').innerText = formatDate(dueDate);
+    document.getElementById('invNumber').innerText = generateDocNumber('invoice');
+
+    // Logo fallback
+    document.getElementById('companyLogo').onerror = function() {
+        this.style.display = 'none';
+        const logoSec = this.parentElement;
+        logoSec.innerHTML = '<div style="width:70px;height:70px;background:linear-gradient(135deg,#0284c7,#0ea5e9);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;font-weight:900;">WT</div><div><h2 style="font-size:20px;color:#0284c7;margin:0;letter-spacing:1px;">WAVE TRONICS</h2><span style="font-size:8.5px;color:#64748b;letter-spacing:2px;">ADVANCED TECHNOLOGY & ELECTRONICS</span></div>';
+    };
+
+    // Update tab counts
+    updateTabCounts();
+
+    // ============ HELPER FUNCTIONS ============
+    function formatDate(date) {
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function formatDateISO(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    function generateDocNumber(type) {
+        let counters = JSON.parse(localStorage.getItem(STORAGE_KEYS.counters) || '{"invoice":0,"quotation":0}');
+        counters[type] = (counters[type] || 0) + 1;
+        localStorage.setItem(STORAGE_KEYS.counters, JSON.stringify(counters));
+        
+        const y = new Date().getFullYear().toString().slice(-2);
+        const m = String(new Date().getMonth() + 1).padStart(2, '0');
+        const prefix = type === 'invoice' ? 'INV' : 'QTN';
+        return `WT-${prefix}-${y}${m}-${String(counters[type]).padStart(4, '0')}`;
+    }
+
+    function numberFormat(num) {
+        return parseFloat(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function getBasePrice(material, layer) {
+        const prices = { '1.0': 8.00, '1.2': 8.50, '1.5': 9.00, '1.6FR4': 10.00 };
+        let price = prices[material] || 8.00;
+        if (layer === 'double') price *= 1.8;
+        return price;
+    }
+
+    function getBulkDiscountPercent(qty) {
+        if (qty >= 500) return 30;
+        if (qty >= 100) return 20;
+        if (qty >= 50) return 12;
+        if (qty >= 20) return 6;
+        return 0;
+    }
+
+    function getDiscountTierText(qty) {
+        if (qty >= 500) return '500+ pcs tier';
+        if (qty >= 100) return '100-499 pcs tier';
+        if (qty >= 50) return '50-99 pcs tier';
+        if (qty >= 20) return '20-49 pcs tier';
+        return '';
+    }
+
+    function numberToWords(num) {
+        if (num === 0) return 'Zero Rupees Only';
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+            'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        function convert(n) {
+            if (n < 20) return ones[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+            if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + convert(n % 100) : '');
+            if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '');
+            if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '');
+            return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '');
+        }
+
+        const rupees = Math.floor(Math.abs(num));
+        const cents = Math.round((Math.abs(num) - rupees) * 100);
+        let result = convert(rupees) + ' Rupees';
+        if (cents > 0) result += ' and ' + convert(cents) + ' Cents';
+        return result + ' Only';
+    }
+
+    // ============ TAB SWITCHING ============
+    function switchTab(tab) {
+        currentTab = tab;
+        
+        // Update tab buttons
+        document.getElementById('tabInvoice').classList.toggle('active', tab === 'invoice');
+        document.getElementById('tabQuotation').classList.toggle('active', tab === 'quotation');
+
+        // Update form header
+        const formHeader = document.getElementById('formHeader');
+        if (tab === 'invoice') {
+            formHeader.innerHTML = '📝 Invoice Generator';
+            formHeader.classList.remove('quotation-header');
+        } else {
+            formHeader.innerHTML = '📑 Quotation Generator';
+            formHeader.classList.add('quotation-header');
+        }
+
+        // Show/hide sections
+        document.getElementById('paymentSection').style.display = tab === 'invoice' ? 'block' : 'none';
+        document.getElementById('quotationSection').style.display = tab === 'quotation' ? 'block' : 'none';
+        
+        // Update buttons
+        document.getElementById('btnSave').innerHTML = tab === 'invoice' ? '💾 Save Invoice' : '💾 Save Quotation';
+        document.getElementById('btnConvert').style.display = 'none';
+
+        // Update document preview
+        const docTitle = document.getElementById('docTitle');
+        const docHeader = document.getElementById('docHeader');
+        const billToHeader = document.getElementById('billToHeader');
+        const docDetailsHeader = document.getElementById('docDetailsHeader');
+        const docNumberLabel = document.getElementById('docNumberLabel');
+        const dueDateLabel = document.getElementById('dueDateLabel');
+        const mainTable = document.getElementById('mainTable');
+        const netTotalRow = document.getElementById('netTotalRow');
+        const termsBlock = document.getElementById('termsBlock');
+
+        if (tab === 'invoice') {
+            docTitle.innerText = 'INVOICE';
+            docTitle.classList.remove('quotation-title');
+            docHeader.classList.remove('quotation-mode');
+            billToHeader.innerHTML = '📋 BILL TO';
+            billToHeader.classList.remove('quotation-box');
+            docDetailsHeader.innerHTML = '📄 INVOICE DETAILS';
+            docDetailsHeader.classList.remove('quotation-box');
+            docNumberLabel.innerText = 'Invoice No:';
+            dueDateLabel.innerText = 'Due Date:';
+            mainTable.classList.remove('quotation-table');
+            netTotalRow.classList.remove('quotation-total');
+            termsBlock.classList.remove('quotation-terms');
+            document.getElementById('advanceRow').style.display = '';
+            document.getElementById('balanceRow').style.display = '';
+            document.getElementById('validityNotice').style.display = 'none';
+            document.getElementById('bankDetailsBlock').style.display = 'block';
+        } else {
+            docTitle.innerText = 'QUOTATION';
+            docTitle.classList.add('quotation-title');
+            docHeader.classList.add('quotation-mode');
+            billToHeader.innerHTML = '📋 QUOTE FOR';
+            billToHeader.classList.add('quotation-box');
+            docDetailsHeader.innerHTML = '📑 QUOTATION DETAILS';
+            docDetailsHeader.classList.add('quotation-box');
+            docNumberLabel.innerText = 'Quotation No:';
+            dueDateLabel.innerText = 'Valid Until:';
+            mainTable.classList.add('quotation-table');
+            netTotalRow.classList.add('quotation-total');
+            termsBlock.classList.add('quotation-terms');
+            document.getElementById('advanceRow').style.display = 'none';
+            document.getElementById('balanceRow').style.display = 'none';
+            document.getElementById('validityNotice').style.display = 'block';
+            document.getElementById('bankDetailsBlock').style.display = 'none';
+        }
+
+        // Generate new number
+        document.getElementById('invNumber').innerText = generateDocNumber(tab);
+        
+        // Update dates
+        updateDates();
+        updateDocument();
+    }
+
+    function updateDates() {
+        const today = new Date();
+        document.getElementById('invDate').innerText = formatDate(today);
+
+        if (currentTab === 'invoice') {
+            const dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 7);
+            document.getElementById('invDueDate').innerText = formatDate(dueDate);
+            
+            // Update terms
+            document.getElementById('termsList').innerHTML = `
+                <li>Manufacturing starts after design confirmation & advance payment.</li>
+                <li>Customer must verify PCB design and dimensions before production.</li>
+                <li>No cancellations or design changes once production begins.</li>
+                <li><strong>Payment balance must be completed within 7 days from invoice date.</strong></li>
+                <li>Warranty covers manufacturing defects only (30 days from delivery).</li>
+            `;
+            document.querySelector('#termsBlock h4').innerText = '📜 Terms & Conditions';
+        } else {
+            const validity = parseInt(document.getElementById('quotationValidity').value) || 7;
+            const validDate = new Date(today);
+            validDate.setDate(validDate.getDate() + validity);
+            document.getElementById('invDueDate').innerText = formatDate(validDate);
+            document.getElementById('validityDays').innerText = validity;
+            document.getElementById('validityEndDate').innerText = formatDate(validDate);
+            
+            // Update terms for quotation
+            document.getElementById('termsList').innerHTML = `
+                <li>This quotation is valid for ${validity} days from the date of issue.</li>
+                <li>Prices are subject to change after the validity period.</li>
+                <li>50% advance payment required to confirm the order.</li>
+                <li>Delivery timeline will be confirmed upon order placement.</li>
+                <li>This is a quotation only, not a confirmed order.</li>
+            `;
+            document.querySelector('#termsBlock h4').innerText = '📜 Quotation Terms';
+        }
+    }
+
+    // ============ CUSTOMER MANAGEMENT ============
+    function getCustomers() {
+        return JSON.parse(localStorage.getItem(STORAGE_KEYS.customers) || '[]');
+    }
+
+    function saveCustomer(custData) {
+        let customers = getCustomers();
+        const existing = customers.findIndex(c => 
+            c.name.toLowerCase() === custData.name.toLowerCase() || 
+            (c.mobile && c.mobile === custData.mobile)
+        );
+        
+        if (existing >= 0) {
+            customers[existing] = { ...customers[existing], ...custData, lastUsed: Date.now() };
+        } else {
+            customers.push({ ...custData, id: Date.now(), created: Date.now(), lastUsed: Date.now() });
+        }
+        
+        localStorage.setItem(STORAGE_KEYS.customers, JSON.stringify(customers));
+    }
+
+    function showCustomerSuggestions() {
+        const query = document.getElementById('custName').value.toLowerCase().trim();
+        const suggestionsEl = document.getElementById('custSuggestions');
+        
+        if (query.length < 1) {
+            suggestionsEl.classList.remove('show');
+            return;
+        }
+
+        const customers = getCustomers();
+        const matches = customers.filter(c => 
+            c.name.toLowerCase().includes(query) || 
+            (c.mobile && c.mobile.includes(query))
+        ).slice(0, 5);
+
+        if (matches.length === 0) {
+            suggestionsEl.classList.remove('show');
+            return;
+        }
+
+        let html = '';
+        matches.forEach(c => {
+            html += `<div class="suggestion-item" onclick='selectCustomer(${JSON.stringify(c).replace(/'/g, "&#39;")})'>
+                <div class="s-name">${c.name}</div>
+                <div class="s-details">${c.mobile || ''} ${c.email ? '| ' + c.email : ''} ${c.address ? '| ' + c.address.substring(0, 30) : ''}</div>
+            </div>`;
+        });
+
+        suggestionsEl.innerHTML = html;
+        suggestionsEl.classList.add('show');
+    }
+
+    function selectCustomer(customer) {
+        document.getElementById('custName').value = customer.name || '';
+        document.getElementById('custMobile').value = customer.mobile || '';
+        document.getElementById('custEmail').value = customer.email || '';
+        document.getElementById('custAddress').value = customer.address || '';
+        document.getElementById('custSuggestions').classList.remove('show');
+        updateDocument();
+    }
+
+    // Hide suggestions on outside click
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.customer-name-wrapper')) {
+            document.getElementById('custSuggestions').classList.remove('show');
+        }
+    });
+
+    // ============ MAIN UPDATE FUNCTION ============
+    function updateDocument() {
+        // Customer info
+        const custName = document.getElementById('custName').value;
+        const custMobile = document.getElementById('custMobile').value;
+        const custEmail = document.getElementById('custEmail').value;
+        const custAddress = document.getElementById('custAddress').value;
+
+        document.getElementById('invCustName').innerText = custName || 'Customer Name';
+        document.getElementById('invCustMobile').innerText = custMobile ? '📞 ' + custMobile : '📞 -';
+        
+        const emailEl = document.getElementById('invCustEmail');
+        if (custEmail) {
+            emailEl.innerText = '📧 ' + custEmail;
+            emailEl.style.display = 'block';
+        } else {
+            emailEl.style.display = 'none';
+        }
+        document.getElementById('invCustAddress').innerText = custAddress ? '📍 ' + custAddress : '📍 -';
+
+        // PCB calculations
+        const l = parseFloat(document.getElementById('length').value) || 0;
+        const w = parseFloat(document.getElementById('width').value) || 0;
+        const qty = parseInt(document.getElementById('qty').value) || 0;
+        const matValue = document.getElementById('material').value;
+        const matSelect = document.getElementById('material');
+        const matName = matSelect.options[matSelect.selectedIndex].text;
+        const layer = document.getElementById('pcbLayer').value;
+        const copperW = document.getElementById('copperWeight');
+        const copperText = copperW.options[copperW.selectedIndex].text;
+        const layerText = layer === 'double' ? 'Double Side' : 'Single Side';
+
+        const area = (l * w) / 100;
+        let unitPrice = getBasePrice(matValue, layer);
+        if (document.getElementById('copperWeight').value === '2oz') unitPrice *= 1.3;
+
+        const pcbGrossTotal = area * unitPrice * qty;
+        const bulkDiscountPct = getBulkDiscountPercent(qty);
+        const bulkDiscountAmount = (pcbGrossTotal * bulkDiscountPct) / 100;
+        const pcbTotal = pcbGrossTotal - bulkDiscountAmount;
+
+        // Update PCB details
+        document.querySelector('#invMaterial .bold').innerText = matName;
+        document.getElementById('invSpecs').innerText = `${layerText} | ${copperText}`;
+        document.getElementById('invL').innerText = l;
+        document.getElementById('invW').innerText = w;
+        document.getElementById('invArea').innerText = area.toFixed(2);
+        document.getElementById('invQty').innerText = qty;
+        document.getElementById('invUnitPrice').innerText = unitPrice.toFixed(2);
+        document.getElementById('invPcbTotal').innerText = numberFormat(pcbGrossTotal);
+
+        // Bulk discount
+        const qtyDiscRow = document.getElementById('qtyDiscountRow');
+        const qtyDiscSummary = document.getElementById('qtyDiscSummary');
+        const discountInfo = document.getElementById('discountInfo');
+
+        if (bulkDiscountPct > 0) {
+            qtyDiscRow.style.display = 'table-row';
+            qtyDiscSummary.style.display = 'table-row';
+            discountInfo.classList.add('show');
+            document.getElementById('qtyDiscountLabel').innerText = `Bulk Quantity Discount (${bulkDiscountPct}% OFF)`;
+            document.getElementById('qtyDiscountDetails').innerText = `- ${getDiscountTierText(qty)}`;
+            document.getElementById('qtyDiscountAmount').innerText = numberFormat(bulkDiscountAmount);
+            document.getElementById('qtyDiscPct').innerText = bulkDiscountPct;
+            document.getElementById('qtyDiscSumAmount').innerText = numberFormat(bulkDiscountAmount);
+            document.getElementById('discountInfoText').innerText = 
+                `Qty ${qty} pcs → ${bulkDiscountPct}% discount saved Rs. ${numberFormat(bulkDiscountAmount)}`;
+        } else {
+            qtyDiscRow.style.display = 'none';
+            qtyDiscSummary.style.display = 'none';
+            discountInfo.classList.remove('show');
+            if (qty > 0 && qty < 20) {
+                discountInfo.classList.add('show');
+                document.getElementById('discountInfoText').innerHTML = 
+                    `💡 Add <strong>${20 - qty} more pcs</strong> to get <strong>6% bulk discount!</strong>`;
+            }
+        }
+
+        // Extra charges
+        const extras = [
+            { name: 'PCB Design / Layout Service', val: parseFloat(document.getElementById('exDesign').value) || 0 },
+            { name: 'Solder Mask Application', val: parseFloat(document.getElementById('exSolder').value) || 0 },
+            { name: 'Silk Screen Printing', val: parseFloat(document.getElementById('exSilk').value) || 0 },
+            { name: 'CNC Drilling Service', val: parseFloat(document.getElementById('exDrilling').value) || 0 },
+            { name: 'Delivery / Courier Charges', val: parseFloat(document.getElementById('exDelivery').value) || 0 },
+            { name: 'Other Additional Charges', val: parseFloat(document.getElementById('exOther').value) || 0 }
+        ];
+
+        let extraBody = '';
+        let extraTotal = 0;
+        let extraCount = 0;
+        extras.forEach(ext => {
+            if (ext.val > 0) {
+                extraCount++;
+                extraBody += `<tr><td class="text-center">${extraCount}</td><td>${ext.name}</td><td class="text-right">${numberFormat(ext.val)}</td></tr>`;
+                extraTotal += ext.val;
+            }
+        });
+
+        if (extraTotal > 0) {
+            extraBody += `<tr style="background:#f0f9ff;"><td></td><td class="bold">Extra Charges Total</td><td class="text-right bold">${numberFormat(extraTotal)}</td></tr>`;
+        }
+
+        document.getElementById('extraChargesBody').innerHTML = extraBody;
+        document.getElementById('extraChargesTable').style.display = extraTotal > 0 ? 'table' : 'none';
+
+        // Calculate totals
+        let discount, advance, netTotal, balance;
+
+        if (currentTab === 'invoice') {
+            discount = parseFloat(document.getElementById('discount').value) || 0;
+            advance = parseFloat(document.getElementById('advance').value) || 0;
+            const payMethod = document.getElementById('paymentMethod');
+            document.getElementById('invPayMethod').innerText = payMethod.options[payMethod.selectedIndex].text;
+        } else {
+            discount = parseFloat(document.getElementById('quotationDiscount').value) || 0;
+            advance = 0;
+        }
+
+        const subTotal = pcbTotal + extraTotal;
+        netTotal = Math.max(0, subTotal - discount);
+        balance = Math.max(0, netTotal - advance);
+
+        document.getElementById('invPcbSubTotal').innerText = numberFormat(pcbGrossTotal);
+        document.getElementById('invExtraTotal').innerText = numberFormat(extraTotal);
+        document.getElementById('invSubTotal').innerText = numberFormat(subTotal);
+        document.getElementById('invDiscount').innerText = numberFormat(discount);
+        document.getElementById('invNetTotal').innerText = numberFormat(netTotal);
+        document.getElementById('invAdvance').innerText = numberFormat(advance);
+        document.getElementById('invBalance').innerText = numberFormat(balance);
+
+        // Amount in words
+        const wordsAmount = currentTab === 'invoice' ? balance : netTotal;
+        document.getElementById('invAmountWords').innerText = numberToWords(wordsAmount);
+
+        // Status
+        let statusHTML = '';
+        if (currentTab === 'quotation') {
+            statusHTML = '<span class="status-badge status-quotation">● Quotation</span>';
+        } else if (balance <= 0 && netTotal > 0) {
+            statusHTML = '<span class="status-badge status-paid">● Paid</span>';
+        } else if (advance > 0) {
+            statusHTML = '<span class="status-badge status-partial">● Partial</span>';
+        } else {
+            statusHTML = '<span class="status-badge status-unpaid">● Unpaid</span>';
+        }
+        document.getElementById('invStatus').innerHTML = statusHTML;
+
+        // Net total label
+        document.getElementById('netTotalLabel').innerText = currentTab === 'quotation' ? 'Quoted Amount' : 'Net Total';
+
+        // Notes
+        const notes = document.getElementById('invoiceNotes').value;
+        if (notes.trim()) {
+            document.getElementById('invNotesSection').style.display = 'block';
+            document.getElementById('invNotes').innerText = ' ' + notes;
+        } else {
+            document.getElementById('invNotesSection').style.display = 'none';
+        }
+
+        // Due warning for invoices
+        const dueWarning = document.getElementById('dueWarning');
+        if (currentTab === 'invoice' && balance > 0) {
+            dueWarning.classList.add('show');
+        } else {
+            dueWarning.classList.remove('show');
+        }
+
+        // Update validity for quotation
+        if (currentTab === 'quotation') {
+            updateDates();
+        }
+
+        // Quick stats
+        document.getElementById('statTotal').innerText = numberFormat(netTotal);
+        document.getElementById('statBalance').innerText = currentTab === 'invoice' ? numberFormat(balance) : '-';
+        document.getElementById('statItems').innerText = qty;
+        document.getElementById('statDue').innerText = currentTab === 'invoice' ? '7d' : document.getElementById('quotationValidity').value + 'd';
+    }
+
+    // Alias for compatibility
+    function updateInvoice() { updateDocument(); }
+
+    // ============ SAVE DOCUMENT ============
+    function saveDocument() {
+        const custName = document.getElementById('custName').value;
+        if (!custName.trim()) {
+            showToast('❌ Please enter customer name!', 'error');
+            document.getElementById('custName').focus();
+            return;
+        }
+
+        const custMobile = document.getElementById('custMobile').value;
+
+        // Save customer
+        saveCustomer({
+            name: custName,
+            mobile: custMobile,
+            email: document.getElementById('custEmail').value,
+            address: document.getElementById('custAddress').value
+        });
+
+        const docData = {
+            id: Date.now(),
+            type: currentTab,
+            docNumber: document.getElementById('invNumber').innerText,
+            custName: custName,
+            custMobile: custMobile,
+            custEmail: document.getElementById('custEmail').value,
+            custAddress: document.getElementById('custAddress').value,
+            material: document.getElementById('material').value,
+            length: document.getElementById('length').value,
+            width: document.getElementById('width').value,
+            qty: document.getElementById('qty').value,
+            pcbLayer: document.getElementById('pcbLayer').value,
+            copperWeight: document.getElementById('copperWeight').value,
+            exDesign: document.getElementById('exDesign').value,
+            exSolder: document.getElementById('exSolder').value,
+            exSilk: document.getElementById('exSilk').value,
+            exDrilling: document.getElementById('exDrilling').value,
+            exDelivery: document.getElementById('exDelivery').value,
+            exOther: document.getElementById('exOther').value,
+            discount: currentTab === 'invoice' ? document.getElementById('discount').value : document.getElementById('quotationDiscount').value,
+            advance: currentTab === 'invoice' ? document.getElementById('advance').value : '0',
+            paymentMethod: currentTab === 'invoice' ? document.getElementById('paymentMethod').value : '',
+            quotationValidity: currentTab === 'quotation' ? document.getElementById('quotationValidity').value : '',
+            notes: document.getElementById('invoiceNotes').value,
+            netTotal: document.getElementById('invNetTotal').innerText,
+            balance: document.getElementById('invBalance').innerText,
+            date: formatDate(new Date()),
+            dateISO: formatDateISO(new Date()),
+            dueDate: document.getElementById('invDueDate').innerText,
+            status: currentTab === 'quotation' ? 'quotation' : 
+                    (parseFloat(document.getElementById('invBalance').innerText.replace(/,/g, '')) <= 0 ? 'paid' : 
+                    (parseFloat(document.getElementById('advance').value) > 0 ? 'partial' : 'unpaid'))
+        };
+
+        const storageKey = currentTab === 'invoice' ? STORAGE_KEYS.invoices : STORAGE_KEYS.quotations;
+        let records = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        const existingIdx = records.findIndex(r => r.docNumber === docData.docNumber);
+        if (existingIdx >= 0) {
+            records[existingIdx] = docData;
+        } else {
+            records.unshift(docData);
+        }
+        
+        if (records.length > 100) records = records.slice(0, 100);
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        
+        updateTabCounts();
+        showToast(`✅ ${currentTab === 'invoice' ? 'Invoice' : 'Quotation'} saved!`, 'success');
+    }
+
+    // ============ LOAD DOCUMENT ============
+    function loadDocument(data) {
+        // Switch to correct tab
+        if (data.type && data.type !== currentTab) {
+            switchTab(data.type);
+        }
+
+        document.getElementById('custName').value = data.custName || '';
+        document.getElementById('custMobile').value = data.custMobile || '';
+        document.getElementById('custEmail').value = data.custEmail || '';
+        document.getElementById('custAddress').value = data.custAddress || '';
+        document.getElementById('material').value = data.material || '1.0';
+        document.getElementById('length').value = data.length || 100;
+        document.getElementById('width').value = data.width || 100;
+        document.getElementById('qty').value = data.qty || 10;
+        document.getElementById('pcbLayer').value = data.pcbLayer || 'single';
+        document.getElementById('copperWeight').value = data.copperWeight || '1oz';
+        document.getElementById('exDesign').value = data.exDesign || 0;
+        document.getElementById('exSolder').value = data.exSolder || 0;
+        document.getElementById('exSilk').value = data.exSilk || 0;
+        document.getElementById('exDrilling').value = data.exDrilling || 0;
+        document.getElementById('exDelivery').value = data.exDelivery || 0;
+        document.getElementById('exOther').value = data.exOther || 0;
+        document.getElementById('invoiceNotes').value = data.notes || '';
+
+        if (data.type === 'invoice' || !data.type) {
+            document.getElementById('discount').value = data.discount || 0;
+            document.getElementById('advance').value = data.advance || 0;
+            document.getElementById('paymentMethod').value = data.paymentMethod || 'cash';
+        } else {
+            document.getElementById('quotationDiscount').value = data.discount || 0;
+            document.getElementById('quotationValidity').value = data.quotationValidity || 7;
+        }
+
+        document.getElementById('invNumber').innerText = data.docNumber || data.invNumber || generateDocNumber(currentTab);
+        
+        // Show convert button for quotations
+        if (data.type === 'quotation') {
+            document.getElementById('btnConvert').style.display = 'flex';
+        }
+
+        updateDocument();
+        closeModal();
+        showToast(`📄 Loaded: ${data.docNumber || data.invNumber}`, 'info');
+    }
+
+    // ============ CONVERT QUOTATION TO INVOICE ============
+    function convertQuotationToInvoice() {
+        if (!confirm('Convert this quotation to an invoice?')) return;
+        
+        // Get current form data
+        const currentData = getCurrentFormData();
+        
+        // Switch to invoice tab
+        switchTab('invoice');
+        
+        // Restore data
+        document.getElementById('custName').value = currentData.custName;
+        document.getElementById('custMobile').value = currentData.custMobile;
+        document.getElementById('custEmail').value = currentData.custEmail;
+        document.getElementById('custAddress').value = currentData.custAddress;
+        document.getElementById('material').value = currentData.material;
+        document.getElementById('length').value = currentData.length;
+        document.getElementById('width').value = currentData.width;
+        document.getElementById('qty').value = currentData.qty;
+        document.getElementById('pcbLayer').value = currentData.pcbLayer;
+        document.getElementById('copperWeight').value = currentData.copperWeight;
+        document.getElementById('exDesign').value = currentData.exDesign;
+        document.getElementById('exSolder').value = currentData.exSolder;
+        document.getElementById('exSilk').value = currentData.exSilk;
+        document.getElementById('exDrilling').value = currentData.exDrilling;
+        document.getElementById('exDelivery').value = currentData.exDelivery;
+        document.getElementById('exOther').value = currentData.exOther;
+        document.getElementById('discount').value = currentData.discount;
+        document.getElementById('invoiceNotes').value = currentData.notes;
+        
+        document.getElementById('btnConvert').style.display = 'none';
+        
+        updateDocument();
+        showToast('📄 Converted to Invoice!', 'success');
+    }
+
+    function getCurrentFormData() {
+        return {
+            custName: document.getElementById('custName').value,
+            custMobile: document.getElementById('custMobile').value,
+            custEmail: document.getElementById('custEmail').value,
+            custAddress: document.getElementById('custAddress').value,
+            material: document.getElementById('material').value,
+            length: document.getElementById('length').value,
+            width: document.getElementById('width').value,
+            qty: document.getElementById('qty').value,
+            pcbLayer: document.getElementById('pcbLayer').value,
+            copperWeight: document.getElementById('copperWeight').value,
+            exDesign: document.getElementById('exDesign').value,
+            exSolder: document.getElementById('exSolder').value,
+            exSilk: document.getElementById('exSilk').value,
+            exDrilling: document.getElementById('exDrilling').value,
+            exDelivery: document.getElementById('exDelivery').value,
+            exOther: document.getElementById('exOther').value,
+            discount: currentTab === 'invoice' ? document.getElementById('discount').value : document.getElementById('quotationDiscount').value,
+            notes: document.getElementById('invoiceNotes').value
+        };
+    }
+
+    // ============ DELETE DOCUMENT ============
+    function deleteDocument(id, type) {
+        if (!confirm('Delete this record?')) return;
+        const storageKey = type === 'invoice' ? STORAGE_KEYS.invoices : STORAGE_KEYS.quotations;
+        let records = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        records = records.filter(r => r.id !== id);
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        updateTabCounts();
+        showHistory();
+        showToast('🗑️ Deleted', 'error');
+    }
+
+    // ============ HISTORY / RECORDS ============
+    function updateTabCounts() {
+        const invoices = JSON.parse(localStorage.getItem(STORAGE_KEYS.invoices) || '[]');
+        const quotations = JSON.parse(localStorage.getItem(STORAGE_KEYS.quotations) || '[]');
+        document.getElementById('invoiceCount').innerText = invoices.length;
+        document.getElementById('quotationCount').innerText = quotations.length;
+    }
+
+    function isOverdue(record) {
+        if (record.type === 'quotation') return false;
+        if (record.status === 'paid') return false;
+        
+        const dueDate = new Date(record.dateISO);
+        dueDate.setDate(dueDate.getDate() + 7);
+        return new Date() > dueDate;
+    }
+
+    function getDaysUntilDue(record) {
+        const dueDate = new Date(record.dateISO);
+        dueDate.setDate(dueDate.getDate() + 7);
+        const diff = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+        return diff;
+    }
+
+    function isQuotationExpired(record) {
+        if (record.type !== 'quotation') return false;
+        const validity = parseInt(record.quotationValidity) || 7;
+        const expiryDate = new Date(record.dateISO);
+        expiryDate.setDate(expiryDate.getDate() + validity);
+        return new Date() > expiryDate;
+    }
+
+    function showHistory() {
+        const invoices = JSON.parse(localStorage.getItem(STORAGE_KEYS.invoices) || '[]');
+        const quotations = JSON.parse(localStorage.getItem(STORAGE_KEYS.quotations) || '[]');
+        const customers = getCustomers();
+
+        // Dashboard stats
+        const totalInvoiceAmount = invoices.reduce((sum, inv) => sum + (parseFloat((inv.netTotal || '0').replace(/,/g, '')) || 0), 0);
+        const totalBalance = invoices.reduce((sum, inv) => sum + (parseFloat((inv.balance || '0').replace(/,/g, '')) || 0), 0);
+        const overdueCount = invoices.filter(inv => isOverdue(inv)).length;
+        const paidCount = invoices.filter(inv => inv.status === 'paid').length;
+
+        document.getElementById('dashboardStats').innerHTML = `
+            <div class="dash-stat">
+                <div class="ds-value">${invoices.length}</div>
+                <div class="ds-label">Total Invoices</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value">${quotations.length}</div>
+                <div class="ds-label">Quotations</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value">Rs.${numberFormat(totalInvoiceAmount)}</div>
+                <div class="ds-label">Total Amount</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value" style="color:#dc2626;">Rs.${numberFormat(totalBalance)}</div>
+                <div class="ds-label">Outstanding</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value" style="color:#16a34a;">${paidCount}</div>
+                <div class="ds-label">Paid</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value" style="color:#dc2626;">${overdueCount}</div>
+                <div class="ds-label">Overdue</div>
+            </div>
+            <div class="dash-stat">
+                <div class="ds-value">${customers.length}</div>
+                <div class="ds-label">Customers</div>
+            </div>
+        `;
+
+        document.getElementById('historySearch').value = '';
+        document.getElementById('historyModal').classList.add('show');
+        filterHistory('all', document.querySelector('.modal-tab-btn'));
+    }
+
+    function filterHistory(filter, btn) {
+        currentHistoryFilter = filter;
+        
+        // Update active tab
+        document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        renderHistoryList();
+    }
+
+    function searchHistory() {
+        renderHistoryList();
+    }
+
+    function renderHistoryList() {
+        const invoices = JSON.parse(localStorage.getItem(STORAGE_KEYS.invoices) || '[]');
+        const quotations = JSON.parse(localStorage.getItem(STORAGE_KEYS.quotations) || '[]');
+        const customers = getCustomers();
+        const searchQuery = (document.getElementById('historySearch').value || '').toLowerCase().trim();
+        const list = document.getElementById('historyList');
+
+        if (currentHistoryFilter === 'customers') {
+            renderCustomersList(customers, searchQuery);
+            return;
+        }
+
+        let allRecords = [];
+        
+        if (currentHistoryFilter === 'all' || currentHistoryFilter === 'invoice' || currentHistoryFilter === 'unpaid' || currentHistoryFilter === 'overdue') {
+            allRecords = allRecords.concat(invoices.map(r => ({...r, type: r.type || 'invoice'})));
+        }
+        if (currentHistoryFilter === 'all' || currentHistoryFilter === 'quotation') {
+            allRecords = allRecords.concat(quotations.map(r => ({...r, type: r.type || 'quotation'})));
+        }
+
+        // Filter
+        if (currentHistoryFilter === 'invoice') {
+            allRecords = allRecords.filter(r => r.type === 'invoice');
+        } else if (currentHistoryFilter === 'quotation') {
+            allRecords = allRecords.filter(r => r.type === 'quotation');
+        } else if (currentHistoryFilter === 'unpaid') {
+            allRecords = allRecords.filter(r => r.type === 'invoice' && r.status !== 'paid');
+        } else if (currentHistoryFilter === 'overdue') {
+            allRecords = allRecords.filter(r => r.type === 'invoice' && isOverdue(r));
+        }
+
+        // Search
+        if (searchQuery) {
+            allRecords = allRecords.filter(r => 
+                (r.custName || '').toLowerCase().includes(searchQuery) ||
+                (r.docNumber || r.invNumber || '').toLowerCase().includes(searchQuery) ||
+                (r.custMobile || '').includes(searchQuery)
+            );
+        }
+
+        // Sort by date (newest first)
+        allRecords.sort((a, b) => (b.id || 0) - (a.id || 0));
+
+        if (allRecords.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:30px;">📭 No records found.</p>';
+            return;
+        }
+
+        let html = `<div style="margin-bottom:10px; font-size:12px; color:#64748b;">${allRecords.length} record(s)</div>`;
+        
+        allRecords.forEach(rec => {
+            const balanceNum = parseFloat((rec.balance || '0').replace(/,/g, '')) || 0;
+            const docNum = rec.docNumber || rec.invNumber;
+            let statusClass, statusText;
+            const overdue = isOverdue(rec);
+            const expired = isQuotationExpired(rec);
+
+            if (rec.type === 'quotation') {
+                if (expired) {
+                    statusClass = 'status-expired';
+                    statusText = 'Expired';
+                } else {
+                    statusClass = 'status-quotation';
+                    statusText = 'Quotation';
+                }
+            } else if (overdue) {
+                statusClass = 'status-overdue overdue-indicator';
+                statusText = '⚠️ Overdue';
+            } else if (rec.status === 'paid' || balanceNum <= 0) {
+                statusClass = 'status-paid';
+                statusText = 'Paid';
+            } else if (rec.status === 'partial' || parseFloat(rec.advance) > 0) {
+                statusClass = 'status-partial';
+                statusText = 'Partial';
+            } else {
+                statusClass = 'status-unpaid';
+                statusText = 'Unpaid';
+            }
+
+            const icon = rec.type === 'quotation' ? '📑' : '📄';
+            const daysInfo = rec.type === 'invoice' && rec.status !== 'paid' && balanceNum > 0 ? 
+                (overdue ? ` | <span style="color:#dc2626;font-weight:700;">OVERDUE by ${Math.abs(getDaysUntilDue(rec))} days</span>` : 
+                ` | Due in ${getDaysUntilDue(rec)} days`) : '';
+
+            const dataStr = JSON.stringify(rec).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+            html += `
+            <div class="history-item" onclick='loadDocument(JSON.parse(this.dataset.record))' data-record='${JSON.stringify(rec).replace(/'/g, "&#39;")}'>
+                <div class="history-info">
+                    <div class="h-name">${icon} ${rec.custName} <span class="status-badge ${statusClass}">${statusText}</span></div>
+                    <div class="h-details">${docNum} | ${rec.date} | Total: Rs. ${rec.netTotal}${rec.type === 'invoice' ? ' | Bal: Rs. ' + rec.balance : ''}${daysInfo}</div>
+                </div>
+                <div class="history-actions" onclick="event.stopPropagation()">
+                    <button style="background:#dc2626;" onclick="deleteDocument(${rec.id}, '${rec.type}')">🗑️</button>
+                </div>
+            </div>`;
+        });
+
+        list.innerHTML = html;
+    }
+
+    function renderCustomersList(customers, searchQuery) {
+        const list = document.getElementById('historyList');
+        let filtered = customers;
+
+        if (searchQuery) {
+            filtered = customers.filter(c => 
+                (c.name || '').toLowerCase().includes(searchQuery) ||
+                (c.mobile || '').includes(searchQuery) ||
+                (c.email || '').toLowerCase().includes(searchQuery)
+            );
+        }
+
+        filtered.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
+
+        if (filtered.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:30px;">👥 No customers found.</p>';
+            return;
+        }
+
+        const invoices = JSON.parse(localStorage.getItem(STORAGE_KEYS.invoices) || '[]');
+
+        let html = `<div style="margin-bottom:10px; font-size:12px; color:#64748b;">${filtered.length} customer(s)</div>`;
+        
+        filtered.forEach(c => {
+            const custInvoices = invoices.filter(inv => inv.custName === c.name || inv.custMobile === c.mobile);
+            const totalSpent = custInvoices.reduce((sum, inv) => sum + (parseFloat((inv.netTotal || '0').replace(/,/g, '')) || 0), 0);
+            const outstanding = custInvoices.reduce((sum, inv) => sum + (parseFloat((inv.balance || '0').replace(/,/g, '')) || 0), 0);
+
+            html += `
+            <div class="history-item" onclick='selectCustomer(${JSON.stringify(c).replace(/'/g, "&#39;")})'>
+                <div class="history-info">
+                    <div class="h-name">👤 ${c.name}</div>
+                    <div class="h-details">
+                        ${c.mobile ? '📞 ' + c.mobile : ''} ${c.email ? '| 📧 ' + c.email : ''}
+                        | ${custInvoices.length} invoice(s) | Total: Rs.${numberFormat(totalSpent)}
+                        ${outstanding > 0 ? '| <span style="color:#dc2626;">Outstanding: Rs.' + numberFormat(outstanding) + '</span>' : ''}
+                    </div>
+                </div>
+                <div class="history-actions" onclick="event.stopPropagation()">
+                    <button style="background:#dc2626;" onclick="deleteCustomer(${c.id})">🗑️</button>
+                </div>
+            </div>`;
+        });
+
+        list.innerHTML = html;
+    }
+
+    function deleteCustomer(id) {
+        if (!confirm('Delete this customer?')) return;
+        let customers = getCustomers();
+        customers = customers.filter(c => c.id !== id);
+        localStorage.setItem(STORAGE_KEYS.customers, JSON.stringify(customers));
+        showHistory();
+        showToast('🗑️ Customer deleted', 'error');
+    }
+
+    function closeModal() {
+        document.getElementById('historyModal').classList.remove('show');
+    }
+
+    // ============ THEME ============
+    function toggleTheme() {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.body.removeAttribute('data-theme');
+            showToast('☀️ Light mode', 'info');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            showToast('🌙 Dark mode', 'info');
+        }
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+
+    // ============ TOAST ============
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ============ RESET ============
+    function resetForm() {
+        if (!confirm('Reset all form data?')) return;
+        ['custName','custMobile','custEmail','custAddress','invoiceNotes'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('material').value = '1.0';
+        document.getElementById('length').value = 100;
+        document.getElementById('width').value = 100;
+        document.getElementById('qty').value = 10;
+        document.getElementById('pcbLayer').value = 'single';
+        document.getElementById('copperWeight').value = '1oz';
+        ['exDesign','exSolder','exSilk','exDrilling','exDelivery','exOther','discount','advance'].forEach(id => {
+            if (document.getElementById(id)) document.getElementById(id).value = 0;
+        });
+        if (document.getElementById('quotationDiscount')) document.getElementById('quotationDiscount').value = 0;
+        if (document.getElementById('quotationValidity')) document.getElementById('quotationValidity').value = 7;
+        document.getElementById('paymentMethod').value = 'cash';
+        document.getElementById('invNumber').innerText = generateDocNumber(currentTab);
+        document.getElementById('btnConvert').style.display = 'none';
+        updateDates();
+        updateDocument();
+        showToast('🔄 Reset done', 'info');
+    }
+
+    // ============ WHATSAPP ============
+    function shareWhatsApp() {
+        let custMobile = document.getElementById('custMobile').value.trim();
+        if (!custMobile) {
+            showToast('❌ Enter mobile number!', 'error');
+            document.getElementById('custMobile').focus();
+            return;
+        }
+
+        const custName = document.getElementById('custName').value || 'Customer';
+        const netTotal = document.getElementById('invNetTotal').innerText;
+        const balance = document.getElementById('invBalance').innerText;
+        const docNo = document.getElementById('invNumber').innerText;
+        const invDate = document.getElementById('invDate').innerText;
+        const advance = document.getElementById('invAdvance').innerText;
+        const dueDate = document.getElementById('invDueDate').innerText;
+
+        let msg;
+        if (currentTab === 'quotation') {
+            msg = `*━━━━ WAVE TRONICS ━━━━*%0A%0A` +
+                `📑 *Quotation:* ${docNo}%0A` +
+                `📅 *Date:* ${invDate}%0A` +
+                `👤 *Customer:* ${custName}%0A%0A` +
+                `💰 *Quoted Amount:* Rs. ${netTotal}%0A` +
+                `📅 *Valid Until:* ${dueDate}%0A%0A` +
+                `Please confirm to proceed with the order.%0A%0A` +
+                `Thank you! ⚡%0A📞 075 860 7096`;
+        } else {
+            msg = `*━━━━ WAVE TRONICS ━━━━*%0A%0A` +
+                `📄 *Invoice:* ${docNo}%0A` +
+                `📅 *Date:* ${invDate}%0A` +
+                `👤 *Customer:* ${custName}%0A%0A` +
+                `💰 *Net Total:* Rs. ${netTotal}%0A` +
+                `✅ *Advance:* Rs. ${advance}%0A` +
+                `🔴 *Balance Due:* Rs. ${balance}%0A` +
+                `📅 *Due Date:* ${dueDate} (7 days)%0A%0A` +
+                `🏦 *Bank: BOC - Pasgoda*%0A` +
+                `A/C: 93310812 (M.M.CHAMOD)%0A%0A` +
+                `Thank you! ⚡%0A📞 075 860 7096`;
+        }
+
+        custMobile = custMobile.replace(/\s/g, '').replace(/-/g, '');
+        if (custMobile.startsWith('0')) custMobile = '94' + custMobile.substring(1);
+        else if (!custMobile.startsWith('94') && !custMobile.startsWith('+94')) custMobile = '94' + custMobile;
+        custMobile = custMobile.replace('+', '');
+
+        window.open(`https://wa.me/${custMobile}?text=${msg}`, '_blank');
+        showToast('📱 Opening WhatsApp...', 'success');
+    }
+
+    // ============ PWA INSTALL ============
+    // Create manifest dynamically
+    const manifestData = {
+        name: "Wave Tronics - Invoice & Quotation Pro",
+        short_name: "Wave Tronics",
+        description: "PCB Invoice & Quotation Generator by Wave Tronics",
+        start_url: window.location.href,
+        display: "standalone",
+        background_color: "#0284c7",
+        theme_color: "#0284c7",
+        orientation: "portrait-primary",
+        icons: [
+            {
+                src: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#0284c7"/><text x="96" y="120" font-size="100" text-anchor="middle" fill="white" font-weight="bold" font-family="Arial">⚡</text></svg>'),
+                sizes: "192x192",
+                type: "image/svg+xml",
+                purpose: "any maskable"
+            }
+        ]
+    };
+
+    const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    document.getElementById('manifestLink').href = manifestURL;
+
+    // Service Worker registration (inline)
+    if ('serviceWorker' in navigator) {
+        const swCode = `
+            const CACHE_NAME = 'wt-cache-v2';
+            const urlsToCache = [self.location.origin + self.location.pathname];
+            
+            self.addEventListener('install', e => {
+                e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+                self.skipWaiting();
+            });
+            
+            self.addEventListener('activate', e => {
+                e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
+                self.clients.claim();
+            });
+            
+            self.addEventListener('fetch', e => {
+                e.respondWith(
+                    caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+                        if (res.status === 200) {
+                            const clone = res.clone();
+                            caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+                        }
+                        return res;
+                    }).catch(() => caches.match(self.location.origin + self.location.pathname)))
+                );
+            });
+        `;
+        
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swURL = URL.createObjectURL(swBlob);
+        
+        navigator.serviceWorker.register(swURL).then(reg => {
+            console.log('SW registered');
+        }).catch(err => {
+            console.log('SW registration failed (normal for local files):', err.message);
+        });
+    }
+
+    // Before Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').classList.add('show');
+    });
+
+    function installApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                if (result.outcome === 'accepted') {
+                    showToast('📱 App installed!', 'success');
+                }
+                deferredPrompt = null;
+                document.getElementById('installBanner').classList.remove('show');
+            });
+        } else {
+            showToast('ℹ️ Add to Home Screen from browser menu', 'info');
+            document.getElementById('installBanner').classList.remove('show');
+        }
+    }
+
+    function dismissInstall() {
+        document.getElementById('installBanner').classList.remove('show');
+    }
+
+    window.addEventListener('appinstalled', () => {
+        document.getElementById('installBanner').classList.remove('show');
+        showToast('✅ App installed successfully!', 'success');
+    });
+
+    // ============ KEYBOARD SHORTCUTS ============
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveDocument(); }
+        if (e.ctrlKey && e.key === 'p') { e.preventDefault(); window.print(); }
+        if (e.key === 'Escape') closeModal();
+    });
+
+    document.getElementById('custMobile').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9+\s-]/g, '');
+    });
+
+    document.getElementById('historyModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ============ CHECK OVERDUE ON LOAD ============
+    function checkOverdueInvoices() {
+        const invoices = JSON.parse(localStorage.getItem(STORAGE_KEYS.invoices) || '[]');
+        const overdueInvoices = invoices.filter(inv => isOverdue(inv));
+        
+        if (overdueInvoices.length > 0) {
+            setTimeout(() => {
+                showToast(`⚠️ ${overdueInvoices.length} overdue invoice(s)! Check records.`, 'error');
+            }, 1000);
+        }
+    }
+
+    // ============ AUTO-SAVE DRAFT ============
+    function saveDraft() {
+        const draft = getCurrentFormData();
+        draft.currentTab = currentTab;
+        draft.docNumber = document.getElementById('invNumber').innerText;
+        localStorage.setItem('wt_draft', JSON.stringify(draft));
+    }
+
+    function loadDraft() {
+        const draft = JSON.parse(localStorage.getItem('wt_draft') || 'null');
+        if (draft && draft.custName) {
+            if (draft.currentTab && draft.currentTab !== currentTab) {
+                switchTab(draft.currentTab);
+            }
+            document.getElementById('custName').value = draft.custName || '';
+            document.getElementById('custMobile').value = draft.custMobile || '';
+            document.getElementById('custEmail').value = draft.custEmail || '';
+            document.getElementById('custAddress').value = draft.custAddress || '';
+            document.getElementById('material').value = draft.material || '1.0';
+            document.getElementById('length').value = draft.length || 100;
+            document.getElementById('width').value = draft.width || 100;
+            document.getElementById('qty').value = draft.qty || 10;
+            document.getElementById('pcbLayer').value = draft.pcbLayer || 'single';
+            document.getElementById('copperWeight').value = draft.copperWeight || '1oz';
+            document.getElementById('exDesign').value = draft.exDesign || 0;
+            document.getElementById('exSolder').value = draft.exSolder || 0;
+            document.getElementById('exSilk').value = draft.exSilk || 0;
+            document.getElementById('exDrilling').value = draft.exDrilling || 0;
+            document.getElementById('exDelivery').value = draft.exDelivery || 0;
+            document.getElementById('exOther').value = draft.exOther || 0;
+            document.getElementById('invoiceNotes').value = draft.notes || '';
+            if (draft.docNumber) document.getElementById('invNumber').innerText = draft.docNumber;
+            
+            if (draft.currentTab === 'invoice' || !draft.currentTab) {
+                document.getElementById('discount').value = draft.discount || 0;
+            } else {
+                document.getElementById('quotationDiscount').value = draft.discount || 0;
+            }
+        }
+    }
+
+    // Auto-save every 10 seconds
+    setInterval(saveDraft, 10000);
+
+    // ============ INITIAL LOAD ============
+    loadDraft();
+    updateDocument();
+    checkOverdueInvoices();
+
+    // Save draft on form input
+    document.getElementById('formBody').addEventListener('input', function() {
+        clearTimeout(this._draftTimer);
+        this._draftTimer = setTimeout(saveDraft, 2000);
+    });
+  </script>
+ </body>
+</html>
